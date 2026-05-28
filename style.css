@@ -1,56 +1,180 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial;
-}
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
-body{
-  background:#0f172a;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
-.container{
-  width:100%;
-  max-width:400px;
-  padding:20px;
-}
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-.login-box{
-  background:white;
-  padding:30px;
-  border-radius:15px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-}
+const firebaseConfig = {
+  apiKey: "AIzaSyDs8OT9c1hyvo2HurbIOy7uV0LNeBPNPbc",
+  authDomain: "sistema-boletos-ce01a.firebaseapp.com",
+  projectId: "sistema-boletos-ce01a",
+  storageBucket: "sistema-boletos-ce01a.firebasestorage.app",
+  messagingSenderId: "759177791376",
+  appId: "1:759177791376:web:e3756a25f55527522e5515"
+};
 
-.login-box h1{
-  text-align:center;
-  color:#0f172a;
-}
+const app = initializeApp(firebaseConfig);
 
-.login-box input{
-  padding:15px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:16px;
-}
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-.login-box button{
-  padding:15px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:16px;
-  background:#2563eb;
-  color:white;
-}
+const loginTela = document.getElementById("loginTela");
+const painel = document.getElementById("painel");
 
-#mensagem{
-  text-align:center;
-  color:red;
+const email = document.getElementById("email");
+const senha = document.getElementById("senha");
+
+const btnLogin = document.getElementById("btnLogin");
+const btnCadastro = document.getElementById("btnCadastro");
+
+const mensagem = document.getElementById("mensagem");
+
+const btnSair = document.getElementById("btnSair");
+
+const cliente = document.getElementById("cliente");
+const valor = document.getElementById("valor");
+const vencimento = document.getElementById("vencimento");
+const status = document.getElementById("status");
+const obs = document.getElementById("obs");
+
+const btnSalvarBoleto = document.getElementById("btnSalvarBoleto");
+
+const listaBoletos = document.getElementById("listaBoletos");
+
+btnCadastro.addEventListener("click", async () => {
+
+  try {
+
+    await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      senha.value
+    );
+
+    mensagem.innerHTML = "Conta criada";
+
+  } catch (error) {
+
+    mensagem.innerHTML = error.message;
+
+  }
+
+});
+
+btnLogin.addEventListener("click", async () => {
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email.value,
+      senha.value
+    );
+
+  } catch (error) {
+
+    mensagem.innerHTML = error.message;
+
+  }
+
+});
+
+btnSair.addEventListener("click", async () => {
+
+  await signOut(auth);
+
+});
+
+onAuthStateChanged(auth, (user) => {
+
+  if(user){
+
+    loginTela.classList.add("hidden");
+    painel.classList.remove("hidden");
+
+    carregarBoletos(user.uid);
+
+  }else{
+
+    loginTela.classList.remove("hidden");
+    painel.classList.add("hidden");
+
+  }
+
+});
+
+btnSalvarBoleto.addEventListener("click", async () => {
+
+  const user = auth.currentUser;
+
+  if(!user) return;
+
+  await addDoc(collection(db, "boletos"), {
+
+    uid:user.uid,
+    cliente:cliente.value,
+    valor:valor.value,
+    vencimento:vencimento.value,
+    status:status.value,
+    obs:obs.value
+
+  });
+
+  cliente.value = "";
+  valor.value = "";
+  vencimento.value = "";
+  obs.value = "";
+
+  carregarBoletos(user.uid);
+
+});
+
+async function carregarBoletos(uid){
+
+  listaBoletos.innerHTML = "";
+
+  const q = query(
+    collection(db, "boletos"),
+    where("uid", "==", uid)
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+
+    const boleto = doc.data();
+
+    listaBoletos.innerHTML += `
+
+      <div class="boleto">
+
+        <h3>${boleto.cliente}</h3>
+
+        <p>Valor: R$ ${boleto.valor}</p>
+
+        <p>Vencimento: ${boleto.vencimento}</p>
+
+        <p>Status: ${boleto.status}</p>
+
+        <p>${boleto.obs}</p>
+
+      </div>
+
+    `;
+
+  });
+
 }
