@@ -9,7 +9,8 @@
 </head>
 <body>
 
-  <div class="container">
+  <!-- LOGIN -->
+  <div class="container" id="loginTela">
 
     <div class="login-box">
 
@@ -24,6 +25,49 @@
       <button id="btnCadastro">Criar Conta</button>
 
       <p id="mensagem"></p>
+
+    </div>
+
+  </div>
+
+  <!-- PAINEL -->
+  <div class="painel hidden" id="painel">
+
+    <header>
+
+      <h1>Painel de Boletos</h1>
+
+      <button id="btnSair">Sair</button>
+
+    </header>
+
+    <div class="formulario">
+
+      <input type="text" id="cliente" placeholder="Nome do cliente">
+
+      <input type="number" id="valor" placeholder="Valor">
+
+      <input type="date" id="vencimento">
+
+      <select id="status">
+        <option>Pendente</option>
+        <option>Pago</option>
+        <option>Vencido</option>
+      </select>
+
+      <textarea id="obs" placeholder="Observações"></textarea>
+
+      <button id="btnSalvarBoleto">
+        Salvar Boleto
+      </button>
+
+    </div>
+
+    <div class="lista">
+
+      <h2>Histórico</h2>
+
+      <div id="listaBoletos"></div>
 
     </div>
 
