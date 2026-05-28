@@ -1,68 +1,95 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial;
+}
 
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+body{
+  background:#0f172a;
+  color:white;
+}
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDs8OT9c1hyvo2HurbIOy7uV0LNeBPNPbc",
-  authDomain: "sistema-boletos-ce01a.firebaseapp.com",
-  projectId: "sistema-boletos-ce01a",
-  storageBucket: "sistema-boletos-ce01a.firebasestorage.app",
-  messagingSenderId: "759177791376",
-  appId: "1:759177791376:web:e3756a25f55527522e5515"
-};
+.hidden{
+  display:none;
+}
 
-const app = initializeApp(firebaseConfig);
+.container{
+  width:100%;
+  max-width:400px;
+  margin:auto;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
 
-const auth = getAuth(app);
+.login-box{
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:15px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
 
-const email = document.getElementById("email");
-const senha = document.getElementById("senha");
+.login-box input,
+.formulario input,
+.formulario select,
+.formulario textarea{
+  padding:15px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
 
-const btnLogin = document.getElementById("btnLogin");
-const btnCadastro = document.getElementById("btnCadastro");
+button{
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  background:#2563eb;
+  color:white;
+  cursor:pointer;
+  font-size:16px;
+}
 
-const mensagem = document.getElementById("mensagem");
+#mensagem{
+  text-align:center;
+  color:red;
+}
 
-btnCadastro.addEventListener("click", async () => {
+.painel{
+  padding:20px;
+  max-width:1200px;
+  margin:auto;
+}
 
-  try {
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
 
-    await createUserWithEmailAndPassword(
-      auth,
-      email.value,
-      senha.value
-    );
+.formulario{
+  display:grid;
+  gap:15px;
+  margin-bottom:30px;
+}
 
-    mensagem.innerHTML = "Conta criada com sucesso";
+.lista{
+  background:white;
+  color:black;
+  padding:20px;
+  border-radius:15px;
+}
 
-  } catch (error) {
-
-    mensagem.innerHTML = error.message;
-
-  }
-
-});
-
-btnLogin.addEventListener("click", async () => {
-
-  try {
-
-    await signInWithEmailAndPassword(
-      auth,
-      email.value,
-      senha.value
-    );
-
-    mensagem.innerHTML = "Login realizado";
-
-  } catch (error) {
-
-    mensagem.innerHTML = error.message;
-
-  }
-
-});
+.boleto{
+  border:1px solid #ccc;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
